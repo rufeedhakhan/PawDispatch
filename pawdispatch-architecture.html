@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PawDispatch Architecture</title>
+<style>
+body{margin:0;background:#0e1a1f;color:#eaf4f2;font-family:"Trebuchet MS","Segoe UI",sans-serif;padding:18px}
+h1{font:700 22px Georgia,serif;margin:0 0 4px}p{margin:0 0 12px;color:#8fb0b3;font-size:13px}
+svg{width:100%;height:auto;display:block}
+.h{font:700 14px Georgia,serif;fill:#8fb0b3;text-anchor:middle}
+.t{font:700 13px "Trebuchet MS",sans-serif;fill:#eaf4f2}.s{font:11px "Trebuchet MS",sans-serif;fill:#9bbcbf}
+.n{fill:#1b3340;stroke:#f4a64a;stroke-width:1.5}.a{fill:#1b3340;stroke:#4fd6a0;stroke-width:1.5}.u{fill:#1b3340;stroke:#62b6ff;stroke-width:1.5}
+.l{stroke:#8fb0b3;stroke-width:1.6;fill:none;marker-end:url(#ar)}
+.band{fill:none;stroke-width:1.5;stroke-dasharray:6 4}
+</style></head><body>
+<h1>PawDispatch system architecture</h1>
+<p>From a WhatsApp report to a confirmed dispatch. Green boxes are AI, blue boxes are human-controlled, amber boxes are standard software.</p>
+<svg viewBox="0 0 1240 600" role="img" aria-label="PawDispatch architecture diagram">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8fb0b3"/></marker></defs>
+<text class="h" x="120" y="40">1. Intake</text><text class="h" x="370" y="40">2. Gateway</text><text class="h" x="620" y="40">3. AI services</text><text class="h" x="870" y="40">4. Decision</text><text class="h" x="1120" y="40">5. Output</text>
+
+<g><rect class="n" x="20" y="60" width="200" height="64" rx="8"/><text class="t" x="34" y="88">WhatsApp bot</text><text class="s" x="34" y="107">Text, photo, voice, location pin</text>
+<rect class="n" x="20" y="138" width="200" height="64" rx="8"/><text class="t" x="34" y="166">SMS fallback</text><text class="s" x="34" y="185">For low-data areas</text></g>
+
+<g><rect class="n" x="270" y="60" width="200" height="64" rx="8"/><text class="t" x="284" y="88">WhatsApp Business API</text><text class="s" x="284" y="107">Webhook receiver</text>
+<rect class="n" x="270" y="138" width="200" height="64" rx="8"/><text class="t" x="284" y="166">Node.js + Express API</text><text class="s" x="284" y="185">Auth, job queue, consent check</text></g>
+
+<g><rect class="a" x="520" y="60" width="200" height="64" rx="8"/><text class="t" x="534" y="88">Speech-to-text</text><text class="s" x="534" y="107">English, Hindi, Konkani</text>
+<rect class="a" x="520" y="138" width="200" height="64" rx="8"/><text class="t" x="534" y="166">NLP extractor</text><text class="s" x="534" y="185">Species, condition, place</text>
+<rect class="a" x="520" y="216" width="200" height="64" rx="8"/><text class="t" x="534" y="244">Vision model</text><text class="s" x="534" y="263">Injury severity from photo</text>
+<rect class="a" x="520" y="294" width="200" height="64" rx="8"/><text class="t" x="534" y="322">Triage scorer</text><text class="s" x="534" y="341">Priority score with reasons</text></g>
+
+<g><rect class="a" x="770" y="60" width="200" height="64" rx="8"/><text class="t" x="784" y="88">Dispatch matcher</text><text class="s" x="784" y="107">Nearest team, vehicle, shelter bed</text>
+<rect class="u" x="770" y="150" width="200" height="64" rx="8"/><text class="t" x="784" y="178">Coordinator approval</text><text class="s" x="784" y="197">Human confirms every dispatch</text>
+<rect class="a" x="770" y="240" width="200" height="64" rx="8"/><text class="t" x="784" y="268">Hotspot forecaster</text><text class="s" x="784" y="287">Clusters and trends</text></g>
+
+<g><rect class="u" x="1020" y="60" width="200" height="64" rx="8"/><text class="t" x="1034" y="88">Coordinator dashboard</text><text class="s" x="1034" y="107">Live map and case queue</text>
+<rect class="n" x="1020" y="150" width="200" height="64" rx="8"/><text class="t" x="1034" y="178">Field team view</text><text class="s" x="1034" y="197">Case, route, status</text>
+<rect class="n" x="1020" y="240" width="200" height="64" rx="8"/><text class="t" x="1034" y="268">Citizen updates</text><text class="s" x="1034" y="287">WhatsApp status messages</text></g>
+
+<path class="l" d="M220 92H268"/><path class="l" d="M220 170H268"/>
+<path class="l" d="M470 92H518"/><path class="l" d="M470 170H518"/>
+<path class="l" d="M620 124V136"/><path class="l" d="M620 202V214"/><path class="l" d="M620 280V292"/>
+<path class="l" d="M720 326C745 326 745 92 768 92"/>
+<path class="l" d="M870 124V148"/>
+<path class="l" d="M970 92H1018"/><path class="l" d="M970 182H1018"/><path class="l" d="M970 182C995 182 995 272 1018 272"/>
+<path class="l" d="M720 170C745 170 745 272 768 272"/>
+
+<rect class="band" x="20" y="390" width="1200" height="56" rx="8" stroke="#f4a64a"/>
+<text class="t" x="620" y="414" text-anchor="middle">Data layer</text><text class="s" x="620" y="434" text-anchor="middle">PostgreSQL with PostGIS (cases, teams, shelters) · Redis queue · Photo storage · Audit log</text>
+<rect class="band" x="20" y="462" width="1200" height="56" rx="8" stroke="#4fd6a0"/>
+<text class="t" x="620" y="486" text-anchor="middle">Responsible AI</text><text class="s" x="620" y="506" text-anchor="middle">Consent message · masked phone numbers · reasons shown for every score · low-confidence cases go to manual review</text>
+<rect class="band" x="20" y="534" width="1200" height="48" rx="8" stroke="#62b6ff"/>
+<text class="s" x="620" y="563" text-anchor="middle">Integrations: WhatsApp Business API · OpenStreetMap / Google Maps routing · SMS gateway · NGO and shelter records · Vet clinic contacts</text>
+</svg></body></html>

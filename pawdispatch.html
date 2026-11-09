@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PawDispatch</title>
+<style>
+:root{--bg:#0e1a1f;--p:#14262d;--p2:#1b3340;--b:#2a4651;--t:#eaf4f2;--m:#8fb0b3;--a:#f4a64a;--g:#4fd6a0;--r:#ff6b6b;--bl:#62b6ff}
+*{box-sizing:border-box;margin:0}body{background:var(--bg);color:var(--t);font:14px/1.45 "Trebuchet MS","Segoe UI",sans-serif;min-height:100vh}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--b)}
+h1{font:700 20px Georgia,serif}h1 small{font:400 12px sans-serif;color:var(--m);margin-left:8px}
+nav{margin-left:auto;display:flex;gap:6px}button{font:inherit;cursor:pointer;color:var(--t)}
+nav button{background:none;border:1px solid var(--b);padding:6px 14px;border-radius:20px}nav button.on{background:var(--a);color:#1a1205;border-color:var(--a);font-weight:700}
+button:focus-visible{outline:2px solid var(--bl);outline-offset:2px}
+.tag{font-size:11px;color:var(--a);border:1px dashed var(--a);padding:2px 8px;border-radius:10px}
+main{padding:16px 18px}
+.grid{display:grid;grid-template-columns:260px 1fr 320px;gap:14px}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+.card{background:var(--p);border:1px solid var(--b);border-radius:10px;padding:12px}
+h2{font:700 14px Georgia,serif;margin-bottom:8px;color:var(--a)}
+#chat{height:330px;overflow:auto;background:#0b1519;border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.bub{max-width:88%;padding:6px 9px;border-radius:8px;font-size:13px}.u{background:#1f5f4a;align-self:flex-end}.bot{background:var(--p2)}
+.chip{display:inline-block;font-size:11px;background:#0003;padding:1px 6px;border-radius:8px;margin-top:3px}
+.primary{width:100%;margin-top:8px;background:var(--g);color:#06241a;border:0;padding:9px;border-radius:8px;font-weight:700}
+.primary:disabled{opacity:.45;cursor:default}
+svg text{font:10px sans-serif;fill:var(--t)}
+.tools{display:flex;gap:8px;margin-bottom:8px;font-size:12px;color:var(--m);align-items:center}
+.q{display:flex;gap:8px;align-items:center;padding:7px;border:1px solid var(--b);border-radius:8px;margin-bottom:6px;cursor:pointer;background:var(--p2)}
+.q.on{border-color:var(--a)}.sc{min-width:38px;text-align:center;font-weight:700;border-radius:6px;padding:3px 0;color:#1a1205}
+.bar{display:flex;align-items:center;gap:6px;font-size:12px;margin:3px 0}.bar i{display:block;height:6px;border-radius:3px;background:var(--a)}
+.rec{background:#0b1519;border-radius:8px;padding:8px;margin-top:8px;font-size:13px}
+.arch{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}@media(max-width:1000px){.arch{grid-template-columns:1fr}}
+.col h3{font:700 13px Georgia,serif;text-align:center;margin-bottom:6px;color:var(--m)}
+.node{background:var(--p2);border:1px solid var(--b);border-left:3px solid var(--a);border-radius:8px;padding:8px;margin-bottom:8px;font-size:12px}
+.node b{display:block;font-size:13px}.node.ai{border-left-color:var(--g)}.node.hu{border-left-color:var(--bl)}
+.band{margin-top:10px;padding:10px;border:1px dashed var(--bl);border-radius:8px;text-align:center;font-size:13px}
+.pulse{animation:p 1.4s infinite}@keyframes p{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.pulse{animation:none}}
+</style></head><body>
+<header><h1>🐾 PawDispatch<small>AI triage and smart dispatch for animal rescue</small></h1><span class="tag">Prototype · demo data</span>
+</header>
+<main>
+<section id="live" class="tab on"><div class="grid">
+<div class="card"><h2>Citizen on WhatsApp</h2><div id="chat" aria-live="polite"><div class="bub bot">Hi! Send a photo, text or voice note with the location of the animal.</div></div>
+<button class="primary" id="sim">Simulate incoming report</button></div>
+<div class="card"><h2>Coordinator map</h2><div class="tools"><label><input type="checkbox" id="heat"> Hotspot forecast</label><span>🔵 Team &nbsp;🟩 Shelter &nbsp;🔴 Case</span></div>
+<svg id="map" viewBox="0 0 600 400" width="100%" role="img" aria-label="Map of rescue teams, shelter and cases">
+<defs><radialGradient id="hg"><stop offset="0" stop-color="#ff6b6b" stop-opacity=".55"/><stop offset="1" stop-color="#ff6b6b" stop-opacity="0"/></radialGradient></defs>
+<rect width="600" height="400" rx="8" fill="#0b1519"/><path d="M0 330 Q120 300 200 340 T400 360 T600 320 V400 H0Z" fill="#12394a"/>
+<g stroke="#27424d" stroke-width="6" fill="none"><path d="M0 200 H600"/><path d="M170 0 V330"/><path d="M430 0 V340"/><path d="M0 100 L600 280"/></g>
+<g id="hot" style="display:none"><circle cx="170" cy="190" r="70" fill="url(#hg)"/><circle cx="400" cy="230" r="55" fill="url(#hg)"/><circle cx="270" cy="120" r="45" fill="url(#hg)"/></g>
+<g id="layer"></g></svg></div>
+<div class="card"><h2>Case queue (highest priority first)</h2><div id="queue"><p style="color:var(--m)">No cases yet. Simulate a report to start.</p></div><div id="detail"></div></div>
+</div></section>
+
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const S=[
+{ch:"💬",msg:"Dog hit by a car near Miramar beach. Bleeding badly, can't stand 😢",lang:"English",photo:1,heard:"Dog hit by vehicle, bleeding, cannot stand",sp:"Dog",loc:"Miramar Beach Road",x:170,y:190,f:[["Visible bleeding",35],["Cannot move",25],["Road hazard",20],["Waiting 4 min",12]]},
+{ch:"💬",msg:"पंडित नगर में गाय के पैर में चोट है, चल नहीं पा रही",lang:"Hindi",photo:1,heard:"Cow has a leg injury, cannot walk",sp:"Cow",loc:"Pandit Nagar",big:1,x:400,y:230,f:[["Leg injury, cannot walk",30],["Large animal",18],["Blocking road",15],["Waiting 6 min",15]]},
+{ch:"🎤",msg:"Voice note · 0:12",lang:"Konkani",voice:1,heard:"Kitten stuck on a rooftop near the market",sp:"Kitten",loc:"Panjim Market",x:270,y:120,f:[["No visible injury",8],["Young animal",10],["Dehydration risk",12]]}];
+const T=[{id:"T1",n:"Rescue Team 1",x:120,y:100,free:1},{id:"T2",n:"Rescue Team 2",x:440,y:90,free:1},{id:"T3",n:"Animal Ambulance 3",x:300,y:290,free:1}];
+const SH={x:510,y:290};let beds=6,i=0,cases=[],sel=null;
+const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const col=s=>s>=70?"var(--r)":s>=40?"var(--a)":"var(--g)";
+function say(c,h){const e=document.createElement("div");e.className="bub "+c;e.innerHTML=h;$("#chat").append(e);$("#chat").scrollTop=1e5}
+function rec(c){const t=T.filter(t=>t.free&&(!c.big||t.id=="T3")).sort((a,b)=>d(a,c)-d(b,c))[0];return t&&{t,eta:Math.round(d(t,c)/12)+4}}
+$("#sim").onclick=()=>{const s=S[i++%3];$("#sim").disabled=true;
+say("u",s.msg+(s.photo?'<br><span class="chip">📷 photo</span>':'')+'<br><span class="chip">📍 location</span>');
+setTimeout(()=>say("bot","Thanks. Reading your report…"),600);
+setTimeout(()=>{const c={...s,id:cases.length+1,score:s.f.reduce((a,b)=>a+b[1],0),st:"New"};cases.push(c);sel=c;
+say("bot","Understood ("+s.lang+"): <i>"+s.heard+"</i>. A coordinator is reviewing your case.");$("#sim").disabled=false;draw()},1500)};
+function draw(){
+$("#queue").innerHTML=cases.slice().sort((a,b)=>b.score-a.score).map(c=>`<div class="q ${c===sel?"on":""}" data-i="${c.id}"><span class="sc" style="background:${col(c.score)}">${c.score}</span><span><b>${c.sp}</b> · ${c.loc}<br><small style="color:var(--m)">${c.st}</small></span></div>`).join("");
+document.querySelectorAll(".q").forEach(e=>e.onclick=()=>{sel=cases.find(c=>c.id==e.dataset.i);draw()});
+let h="";if(sel){const r=rec(sel);h=`<h2 style="margin-top:10px">Why ${sel.score}?</h2>`+sel.f.map(f=>`<div class="bar"><span style="width:150px">${f[0]}</span><i style="width:${f[1]*2}px"></i>+${f[1]}</div>`).join("")+`<div class="rec"><b>AI suggestion</b><br>`+(sel.st=="Dispatched"?`✅ ${sel.by} dispatched · ETA ${sel.eta} min`:r?`${r.t.n} · ETA about ${r.eta} min (demo estimate)<br>Shelter bed reserved: ${beds} free`:"No team free. Case stays queued.")+`</div>`+(sel.st=="New"&&rec(sel)?`<button class="primary" id="ok" style="background:var(--a)">Confirm dispatch</button>`:"");}
+$("#detail").innerHTML=h;
+if($("#ok"))$("#ok").onclick=()=>{const r=rec(sel);r.t.free=0;beds--;sel.st="Dispatched";sel.by=r.t.n;sel.eta=r.eta;sel.tid=r.t.id;say("bot","🚑 "+r.t.n+" is on the way. ETA about "+r.eta+" min.");draw()};
+$("#layer").innerHTML=`<rect x="${SH.x-12}" y="${SH.y-12}" width="24" height="24" rx="4" fill="#4fd6a0"/><text x="${SH.x-18}" y="${SH.y+26}">Shelter ${beds} beds</text>`+
+T.map(t=>`<circle cx="${t.x}" cy="${t.y}" r="9" fill="${t.free?"#62b6ff":"#566"}"/><text x="${t.x-14}" y="${t.y-14}">${t.n.split(" ").slice(-2).join(" ")}</text>`).join("")+
+cases.map(c=>{const t=T.find(t=>t.id==c.tid);return (t?`<line x1="${t.x}" y1="${t.y}" x2="${c.x}" y2="${c.y}" stroke="#f4a64a" stroke-width="2" stroke-dasharray="6 4"/>`:"")+`<circle cx="${c.x}" cy="${c.y}" r="10" fill="${col(c.score)}" class="${c.st=="New"?"pulse":""}" stroke="${c===sel?"#fff":"none"}" stroke-width="2"/><text x="${c.x+14}" y="${c.y+4}">${c.sp} ${c.score}</text>`}).join("")}
+$("#heat").onchange=e=>$("#hot").style.display=e.target.checked?"block":"none";
+draw();
+</script></body></html>
